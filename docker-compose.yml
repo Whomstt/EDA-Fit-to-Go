@@ -13,7 +13,7 @@ services:
       - spring-app
       - postgres
     networks:
-      - fit-to-go-network
+      - app-network
 
   spring-app:
     container_name: fit-to-go-spring-app
@@ -28,7 +28,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
-      - fit-to-go-network
+      - app-network
 
   postgres:
     container_name: fit-to-go-postgres
@@ -40,7 +40,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - fit-to-go-network
+      - app-network
 
   kafka:
     container_name: fit-to-go-kafka
@@ -54,7 +54,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - fit-to-go-network
+      - app-network
 
   zookeeper:
     container_name: fit-to-go-zookeeper
@@ -64,8 +64,8 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - fit-to-go-network
+      - app-network
 
 networks:
-  fit-to-go-network:
+  app-network:
     driver: bridge
