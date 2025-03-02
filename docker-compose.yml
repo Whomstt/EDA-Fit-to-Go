@@ -1,71 +1,28 @@
 services:
   nextjs-app:
-    container_name: fit-to-go-nextjs-app
+    container_name: nextjs-app
     build:
       context: ./nextjs-frontend
       target: dev
       dockerfile: Dockerfile
     volumes:
-      - ./nextjs-frontend:/app
+        - ./nextjs-frontend:/app
+        - /app/node_modules
+        - /app/.next
     ports:
       - "3000:3000"
-    depends_on:
-      - spring-app
-      - postgres
     networks:
       - app-network
-
   spring-app:
-    container_name: fit-to-go-spring-app
+    container_name: spring-app
     build:
       context: ./spring-backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    command: ["java", "-jar", "target/spring-backend-0.0.1-SNAPSHOT.jar"]
     networks:
       - app-network
-
-  postgres:
-    container_name: fit-to-go-postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydatabase
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-
-  kafka:
-    container_name: fit-to-go-kafka
-    image: bitnami/kafka:latest
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      ALLOW_PLAINTEXT_LISTENER: "yes"
-    ports:
-      - "9092:9092"
-    depends_on:
-      - zookeeper
-    networks:
-      - app-network
-
-  zookeeper:
-    container_name: fit-to-go-zookeeper
-    image: bitnami/zookeeper:latest
-    environment:
-      ALLOW_ANONYMOUS_LOGIN: "yes"
-    ports:
-      - "2181:2181"
-    networks:
-      - app-network
-
 networks:
   app-network:
     driver: bridge
