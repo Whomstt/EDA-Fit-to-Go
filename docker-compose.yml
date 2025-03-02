@@ -1,5 +1,6 @@
 services:
   nextjs-app:
+    container_name: nextjs-app
     build:
       context: ./nextjs-frontend
       target: dev
@@ -10,3 +11,11 @@ services:
         - /app/.next
     ports:
       - "3000:3000"
+  spring-app:
+    container_name: spring-app
+    build:
+      context: ./spring-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    command: ["java", "-jar", "target/spring-backend-0.0.1-SNAPSHOT.jar"]
