@@ -6,11 +6,15 @@ services:
       target: dev
       dockerfile: Dockerfile
     volumes:
-        - ./nextjs-frontend:/app
-        - /app/node_modules
-        - /app/.next
+      - ./nextjs-frontend:/app
+      - /app/node_modules
+      - /app/.next
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - app-network
   # spring-app:
