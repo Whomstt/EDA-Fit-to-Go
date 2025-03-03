@@ -1,6 +1,6 @@
 services:
   nextjs-app:
-    container_name: nextjs-app
+    container_name: fit-to-go-nextjs-app
     build:
       context: ./nextjs-frontend
       target: dev
@@ -18,7 +18,7 @@ services:
     networks:
       - app-network
   spring-app:
-    container_name: spring-app
+    container_name: fit-to-go-spring-app
     build:
       context: ./spring-backend
       dockerfile: Dockerfile
@@ -26,8 +26,28 @@ services:
       - "8080:8080"
     volumes:
       - ./spring-backend:/app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    networks:
+      - app-network
+  postgres-db:
+    container_name: fit-to-go-postgres-db
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
     networks:
       - app-network
 networks:
   app-network:
     driver: bridge
+volumes:
+  postgres-data:
