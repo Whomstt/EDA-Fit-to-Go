@@ -1,5 +1,6 @@
 package com.fit_to_go.spring_backend.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,9 +15,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int likecount;
-    private int commentcount;
-    private int sharecount;
+    @Column(name = "likecount")
+    private int likeCount;
+
+    @Column(name = "commentcount")
+    private int commentCount;
+
+    @Column(name = "sharecount")
+    private int shareCount;
 
     // Getters and setters
     public Long getId() {
@@ -27,27 +33,27 @@ public class Post {
         this.id = id;
     }
 
-    public int getLikecount() {
-        return likecount;
+    public int getLikeCount() {
+        return likeCount;
     }
 
-    public void setLikecount(int likecount) {
-        this.likecount = likecount;
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
-    public int getCommentcount() {
-        return commentcount;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setCommentcount(int commentcount) {
-        this.commentcount = commentcount;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
-    public int getSharecount() {
-        return sharecount;
+    public int getShareCount() {
+        return shareCount;
     }
 
-    public void setSharecount(int sharecount) {
-        this.sharecount = sharecount;
+    public void setShareCount(int shareCount) {
+        this.shareCount = shareCount;
     }
 }
