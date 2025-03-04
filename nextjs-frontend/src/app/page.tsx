@@ -38,7 +38,11 @@ export default function Home() {
     );
   }, []);
 
-  const colors: Record<string, string> = { likes: "blue", comments: "green", shares: "purple" };
+  const colors: Record<string, string> = {
+    likes: "bg-blue-500 hover:bg-blue-600",
+    comments: "bg-green-500 hover:bg-green-600",
+    shares: "bg-purple-500 hover:bg-purple-600",
+  };
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -49,7 +53,7 @@ export default function Home() {
           </p>
           <button
             onClick={() => incrementCount(field, setCounts)}
-            className={`px-4 py-2 text-white bg-${colors[field]}-500 rounded hover:bg-${colors[field]}-600`}
+            className={`px-4 py-2 text-white rounded ${colors[field]}`}
           >
             Increment {field}
           </button>
