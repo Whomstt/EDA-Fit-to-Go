@@ -34,8 +34,8 @@ export default function Home() {
       {posts.length > 0 ? (
         posts.map((post) => (
           <div key={post.id} className="mb-4 p-4 bg-white shadow-md rounded-lg w-2/3">
-            <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-            <p className="text-lg mb-2">
+            <h2 className="text-2xl font-bold mb-2 text-gray-900">{post.title}</h2>
+            <p className="text-lg mb-2 text-gray-700">
               Likes: {post.likecount}, Comments: {post.commentcount}, Shares: {post.sharecount}
             </p>
           </div>
