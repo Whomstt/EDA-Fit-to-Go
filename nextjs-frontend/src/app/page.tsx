@@ -22,14 +22,14 @@ const fetchPosts = async (): Promise<Post[]> => {
   }
 };
 
-const updateCount = async (id: number, type: string): Promise<Post | null> => {
+const incrementCount = async (id: number, type: keyof Post): Promise<Post | null> => {
   try {
     const response = await fetch(`${apiBase}/${id}/increment/${type}`, {
       method: "PUT",
     });
     return response.ok ? await response.json() : null;
   } catch (error) {
-    console.error(`Error updating ${type} count`, error);
+    console.error(`Error incrementing ${type} count`, error);
     return null;
   }
 };
@@ -41,8 +41,8 @@ export default function Home() {
     fetchPosts().then(setPosts);
   }, []);
 
-  const incrementCount = async (id: number, type: keyof Post) => {
-    const updatedPost = await updateCount(id, type);
+  const handleIncrement = async (id: number, type: keyof Post) => {
+    const updatedPost = await incrementCount(id, type);
     if (updatedPost) {
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -63,19 +63,19 @@ export default function Home() {
             </p>
             <div>
               <button
-                onClick={() => incrementCount(post.id, "likeCount")}
+                onClick={() => handleIncrement(post.id, "likeCount")}
                 className="bg-blue-500 text-white py-1 px-2 rounded mr-2"
               >
                 Like
               </button>
               <button
-                onClick={() => incrementCount(post.id, "commentCount")}
+                onClick={() => handleIncrement(post.id, "commentCount")}
                 className="bg-green-500 text-white py-1 px-2 rounded mr-2"
               >
                 Comment
               </button>
               <button
-                onClick={() => incrementCount(post.id, "shareCount")}
+                onClick={() => handleIncrement(post.id, "shareCount")}
                 className="bg-red-500 text-white py-1 px-2 rounded"
               >
                 Share

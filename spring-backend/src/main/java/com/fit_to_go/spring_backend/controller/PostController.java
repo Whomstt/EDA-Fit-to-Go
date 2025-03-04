@@ -1,5 +1,6 @@
 package com.fit_to_go.spring_backend.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,12 @@ public class PostController {
 
     @GetMapping("/all")
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findAll()
+                            .stream()
+                            .sorted(Comparator.comparingLong(Post::getId))
+                            .toList();
     }
+
 
     @PutMapping("{id}/increment/{type}")
     public Post incrementCount(@PathVariable Long id, @PathVariable String type) {
