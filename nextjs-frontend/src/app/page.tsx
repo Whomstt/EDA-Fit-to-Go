@@ -2,63 +2,47 @@
 
 import React, { useState, useEffect } from "react";
 
+interface Post {
+  id: number;
+  title: string;
+  likecount: number;
+  commentcount: number;
+  sharecount: number;
+}
+
 const apiBase = "http://localhost:8080/api/post";
 
-const fetchCount = async (field: string): Promise<number> => {
+const fetchPosts = async (): Promise<Post[]> => {
   try {
-    const response = await fetch(`${apiBase}/count/${field}`);
-    return response.ok ? await response.json() : 0;
-  } catch {
-    console.error(`Error fetching ${field} count`);
-    return 0;
-  }
-};
-
-const incrementCount = async (
-  field: string,
-  setCounts: React.Dispatch<React.SetStateAction<Record<string, number>>>
-): Promise<void> => {
-  try {
-    const response = await fetch(`${apiBase}/increment/${field}`, { method: "POST" });
-    if (response.ok) {
-      setCounts((prev) => ({ ...prev, [field]: prev[field] + 1 }));
-    }
-  } catch {
-    console.error(`Error incrementing ${field}`);
+    const response = await fetch(`${apiBase}/all`);
+    return response.ok ? await response.json() : [];
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
   }
 };
 
 export default function Home() {
-  const [counts, setCounts] = useState<Record<string, number>>({ likes: 0, comments: 0, shares: 0 });
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    const fields = ["likes", "comments", "shares"];
-    Promise.all(fields.map(fetchCount)).then(([likes, comments, shares]) =>
-      setCounts({ likes, comments, shares })
-    );
+    fetchPosts().then(setPosts);
   }, []);
-
-  const colors: Record<string, string> = {
-    likes: "bg-blue-500 hover:bg-blue-600",
-    comments: "bg-green-500 hover:bg-green-600",
-    shares: "bg-purple-500 hover:bg-purple-600",
-  };
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {Object.entries(counts).map(([field, value]) => (
-        <div key={field} className="mb-4">
-          <p className="text-xl text-black capitalize">
-            {field}: {value}
-          </p>
-          <button
-            onClick={() => incrementCount(field, setCounts)}
-            className={`px-4 py-2 text-white rounded ${colors[field]}`}
-          >
-            Increment {field}
-          </button>
-        </div>
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <div key={post.id} className="mb-4 p-4 bg-white shadow-md rounded-lg w-2/3">
+            <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
+            <p className="text-lg mb-2">
+              Likes: {post.likecount}, Comments: {post.commentcount}, Shares: {post.sharecount}
+            </p>
+          </div>
+        ))
+      ) : (
+        <p className="text-xl text-gray-700">Loading posts...</p>
+      )}
     </main>
   );
 }
