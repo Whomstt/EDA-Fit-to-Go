@@ -12,6 +12,7 @@ interface Post {
 
 const apiBase = "http://localhost:8080/api/post";
 
+// Fetch all posts from the API.
 const fetchPosts = async (): Promise<Post[]> => {
   try {
     const response = await fetch(`${apiBase}/all`);
@@ -22,15 +23,18 @@ const fetchPosts = async (): Promise<Post[]> => {
   }
 };
 
-const incrementCount = async (id: number, type: keyof Post): Promise<Post | null> => {
+// Trigger the increment endpoint. We no longer expect a JSON response.
+const incrementCount = async (id: number, type: keyof Post): Promise<void> => {
   try {
-    const response = await fetch(`${apiBase}/${id}/increment/${type}`, {
+    const response = await fetch(`${apiBase}/${id}/increment/${type.toLowerCase()}`, {
       method: "PUT",
     });
-    return response.ok ? await response.json() : null;
+    if (!response.ok) {
+      const errMsg = await response.text();
+      console.error(`Error incrementing ${type} count: ${errMsg}`);
+    }
   } catch (error) {
     console.error(`Error incrementing ${type} count`, error);
-    return null;
   }
 };
 
@@ -41,15 +45,13 @@ export default function Home() {
     fetchPosts().then(setPosts);
   }, []);
 
+  // When a button is clicked, call the increment endpoint then refresh posts.
   const handleIncrement = async (id: number, type: keyof Post) => {
-    const updatedPost = await incrementCount(id, type);
-    if (updatedPost) {
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post.id === id ? { ...post, [type]: updatedPost[type] } : post
-        )
-      );
-    }
+    await incrementCount(id, type);
+    // Due to asynchronous processing through Kafka, we add a short delay before refreshing.
+    setTimeout(() => {
+      fetchPosts().then(setPosts);
+    }, 500); // Adjust the delay as needed
   };
 
   return (
