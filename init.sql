@@ -11,3 +11,6 @@ VALUES ('First Post', 5, 6, 1);
 
 INSERT INTO posts (title, likecount, commentcount, sharecount)
 VALUES ('Second Post', 3, 4, 8);
+
+INSERT INTO posts (title, likecount, commentcount, sharecount)
+VALUES ('Third Post', 7, 2, 3);

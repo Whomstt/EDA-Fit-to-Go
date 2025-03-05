@@ -64,19 +64,19 @@ export default function Home() {
             <div>
               <button
                 onClick={() => handleIncrement(post.id, "likeCount")}
-                className="bg-blue-500 text-white py-1 px-2 rounded mr-2"
+                className="bg-blue-500 text-white py-1 px-2 rounded mr-2 hover:brightness-75 transition duration-200"
               >
                 Like
               </button>
               <button
                 onClick={() => handleIncrement(post.id, "commentCount")}
-                className="bg-green-500 text-white py-1 px-2 rounded mr-2"
+                className="bg-green-500 text-white py-1 px-2 rounded mr-2 hover:brightness-75 transition duration-200"
               >
                 Comment
               </button>
               <button
                 onClick={() => handleIncrement(post.id, "shareCount")}
-                className="bg-red-500 text-white py-1 px-2 rounded"
+                className="bg-red-500 text-white py-1 px-2 rounded hover:brightness-75 transition duration-200"
               >
                 Share
               </button>
