@@ -10,10 +10,11 @@ interface Post {
   shareCount: number;
 }
 
-const apiBase = "http://localhost:8080/api/post";
+const apiBase = "/api/post";
 
 // Fetch all posts from the API.
 const fetchPosts = async (): Promise<Post[]> => {
+  console.log("API Base URL:", apiBase);
   try {
     const response = await fetch(`${apiBase}/all`);
     return response.ok ? await response.json() : [];
