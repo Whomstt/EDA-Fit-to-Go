@@ -31,6 +31,15 @@ public class PostController {
         return postRepository.findAllByOrderByIdAsc();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()) {
+            return ResponseEntity.ok(post.get()); // Return the found post
+        }
+        return ResponseEntity.notFound().build(); // Return 404 if not found
+    }
+
     private ResponseEntity<String> modifyPostCount(Long id, String action, String type) {
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
