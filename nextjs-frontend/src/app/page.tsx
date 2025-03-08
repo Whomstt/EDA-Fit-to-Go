@@ -1,4 +1,4 @@
-import PostList from './PostList';
+import PostList from './components/PostList';
 
 
 const HomePage = async () => {
