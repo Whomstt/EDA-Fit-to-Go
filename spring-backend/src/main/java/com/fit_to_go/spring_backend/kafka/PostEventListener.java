@@ -21,22 +21,29 @@ public class PostEventListener {
     @KafkaListener(topics = "post-events-topic", groupId = "post-events-group")
     public void listenPostEvent(String message) {
         logger.info("Received event from Kafka: {}", message);
+        
+        String[] parts = message.split(":");
+        Long postId = Long.valueOf(parts[0]);
+        String action = parts[1];
+        String type = parts[2];
 
-        String[] messageParts = message.split(":");
-        Long postId = Long.valueOf(messageParts[0]);
-        String type = messageParts[1];
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-
-        switch (type.toLowerCase()) {
-            case "likecount" -> post.setLikeCount(post.getLikeCount() + 1);
-            case "commentcount" -> post.setCommentCount(post.getCommentCount() + 1);
-            case "sharecount" -> post.setShareCount(post.getShareCount() + 1);
-            default -> throw new RuntimeException("Invalid event type");
+        switch (action.toLowerCase()) {
+            case "increment" -> {
+                switch (type.toLowerCase()) {
+                    case "likecount" -> post.setLikeCount(post.getLikeCount() + 1);                }
+            }
+            case "decrement" -> {
+                switch (type.toLowerCase()) {
+                    case "likecount" -> post.setLikeCount(post.getLikeCount() - 1);
+                }
+            }
+            default -> throw new RuntimeException("Invalid action: " + action);
         }
 
-        logger.info("Updated post: {}", post);
-
         postRepository.save(post);
+        logger.info("Updated post: {}", post);
     }
 }

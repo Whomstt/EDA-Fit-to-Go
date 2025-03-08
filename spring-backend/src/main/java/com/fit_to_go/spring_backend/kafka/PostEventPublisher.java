@@ -15,8 +15,8 @@ public class PostEventPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void publishPostEvent(Long postId, String type) {
-        String message = postId + ":" + type;
+    public void publishPostEvent(Long postId, String action, String type) {
+        String message = postId + ":" + action + ":" + type;
 
         logger.info("Publishing event to Kafka: {}", message);
 

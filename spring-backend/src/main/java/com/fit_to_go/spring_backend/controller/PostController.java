@@ -31,28 +31,22 @@ public class PostController {
         return postRepository.findAllByOrderByIdAsc();
     }
 
-    private ResponseEntity<String> incrementPostCount(Long id, String type) {
+    private ResponseEntity<String> modifyPostCount(Long id, String action, String type) {
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
-            postEventPublisher.publishPostEvent(id, type);
-            return ResponseEntity.ok("Event published: " + type);
-        } else {
-            return ResponseEntity.notFound().build();  // Return 404 if the post is not found
+            postEventPublisher.publishPostEvent(id, action, type);
+            return ResponseEntity.ok("Event published: " + action + ":" + type);
         }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("{id}/increment/likecount")
     public ResponseEntity<String> incrementLikeCount(@PathVariable Long id) {
-        return incrementPostCount(id, "likecount");
+        return modifyPostCount(id, "increment", "likecount");
     }
 
-    @PutMapping("{id}/increment/commentcount")
-    public ResponseEntity<String> incrementCommentCount(@PathVariable Long id) {
-        return incrementPostCount(id, "commentcount");
-    }
-
-    @PutMapping("{id}/increment/sharecount")
-    public ResponseEntity<String> incrementShareCount(@PathVariable Long id) {
-        return incrementPostCount(id, "sharecount");
+    @PutMapping("{id}/decrement/likecount")
+    public ResponseEntity<String> decrementLikeCount(@PathVariable Long id) {
+        return modifyPostCount(id, "decrement", "likecount");
     }
 }
