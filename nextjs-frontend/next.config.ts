@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: '/CS4227-Fit-to-Go/nextjs-frontend',
   async rewrites() {
     return [
       {
