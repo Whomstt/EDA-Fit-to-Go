@@ -7,8 +7,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 22
-      working-directory: nextjs-frontend
-
+        
     - name: Cache dependencies ⚡
       id: cache_dependencies
       uses: actions/cache@v3
@@ -20,4 +19,3 @@ runs:
       shell: bash
       if: steps.cache_dependencies.outputs.cache-hit != 'true'
       run: npm ci
-      working-directory: nextjs-frontend
