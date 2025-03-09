@@ -12,10 +12,11 @@ runs:
       id: cache_dependencies
       uses: actions/cache@v3
       with:
-        path: node_modules
-        key: node-modules-${{ hashFiles('nextjs-frontend/package-lock.json') }}
+        path: nextjs-frontend/node_modules  # Update path
+        key: node-modules-${{ hashFiles('nextjs-frontend/package-lock.json') }}  # Hash correct file
 
     - name: Install dependencies 🔧
       shell: bash
       if: steps.cache_dependencies.outputs.cache-hit != 'true'
       run: npm ci
+      working-directory: ./nextjs-frontend  # Set working directory
