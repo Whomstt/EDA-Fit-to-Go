@@ -23,23 +23,19 @@ jobs:
 
       - name: Setup Node.js ⚙️ - Cache dependencies ⚡ - Install dependencies 🔧
         uses: ./.github/workflows/setup-node
-        with:
-          working-directory: nextjs-frontend
 
       - name: Setup Pages ⚙️
         uses: actions/configure-pages@v4
         with:
           static_site_generator: next
-          working-directory: nextjs-frontend
 
       - name: Build with Next.js 🏗️
         run: npx next build
-        working-directory: nextjs-frontend
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
         with:
-          path: nextjs-frontend/out
+          path: ./out
 
   deploy:
     environment:

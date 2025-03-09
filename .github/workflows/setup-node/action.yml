@@ -1,10 +1,5 @@
 name: setup-node
 description: "Setup Node.js ⚙️ - Cache dependencies ⚡ - Install dependencies 🔧"
-inputs:
-  working-directory:
-    description: 'The working directory for the project'
-    required: false
-    default: ''
 runs:
   using: "composite"
   steps:
@@ -12,20 +7,15 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 22
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
 
     - name: Cache dependencies ⚡
       id: cache_dependencies
       uses: actions/cache@v3
       with:
-        path: ${{ inputs.working-directory }}/node_modules
-        key: node-modules-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
+        path: node_modules
+        key: node-modules-${{ hashFiles('package-lock.json') }}
 
     - name: Install dependencies 🔧
       shell: bash
       if: steps.cache_dependencies.outputs.cache-hit != 'true'
       run: npm ci
-      working-directory: ${{ inputs.working-directory }}
