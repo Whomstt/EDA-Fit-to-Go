@@ -33,7 +33,6 @@ jobs:
         run: |
           cd nextjs-frontend
           npx next build
-          npx next export
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
