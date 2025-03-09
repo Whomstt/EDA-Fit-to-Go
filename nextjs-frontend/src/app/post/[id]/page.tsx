@@ -9,8 +9,9 @@ export async function generateStaticParams() {
   ];
 }
 
-// The page component receives the dynamic parameters and passes them to the client component.
+// The page component receives the dynamic parameters and needs to await them
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  // Await the params before using them
   const resolvedParams = await params;
   return <PostDetail id={resolvedParams.id} />;
 }

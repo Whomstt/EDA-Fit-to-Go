@@ -20,8 +20,8 @@ export default function PostDetail({ id }: { id: string }) {
     if (!id) return;
     (async () => {
       try {
-        // Attempt to fetch the post data from the backend
-        const data = await fetchPostById(id);
+        // Convert the id to a number and fetch the post data
+        const data = await fetchPostById(Number(id)); // Convert id to a number
         setPost({ ...data, liked: false });
       } catch (error) {
         console.error('Error fetching post, falling back to mock data:', error);
@@ -33,6 +33,7 @@ export default function PostDetail({ id }: { id: string }) {
       }
     })();
   }, [id]);
+  
 
   const handleLike = async (postId: number, liked: boolean) => {
     if (!post) return;
