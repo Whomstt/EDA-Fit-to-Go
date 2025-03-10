@@ -15,6 +15,15 @@ export const handleCommentAction = (id: number): void => {
 };
 
 export const handleShareAction = (id: number): void => {
-  const shareLink = `${window.location.origin}/post/${id}`;
-  alert(`Share link: ${shareLink}`);
+  const shareLink = `${window.location.origin}/CS4227-Fit-to-Go/post/${id}`;
+
+  // Try to copy the link to the clipboard
+  navigator.clipboard.writeText(shareLink)
+    .then(() => {
+      alert('Link copied to clipboard!');
+    })
+    .catch((err) => {
+      console.error('Failed to copy: ', err);
+      alert('Failed to copy link');
+    });
 };
