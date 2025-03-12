@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import PostCard from './PostCard';
 import { Post } from '../types/Post';
 import { toggleLike, actionComment, actionShare } from '../api/posts';
@@ -17,6 +18,7 @@ interface PostListProps {
 
 const PostList: React.FC<PostListProps> = ({ posts }) => {
   const [localPosts, setLocalPosts] = useState<Post[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     setLocalPosts(posts.map(post => ({ ...post, liked: false })));
@@ -36,14 +38,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
   };
 
   const handleComment = async (id: number) => {
-    setLocalPosts(prevPosts =>
-      prevPosts.map(post => (post.id === id ? handleCommentAction(post) : post))
-    );
-    try {
-      await actionComment(id);
-    } catch (error) {
-      console.error('Error commenting on post:', error);
-    }
+    router.push(`/post/${id}`);
   };
 
   const handleShare = async (id: number) => {
@@ -67,6 +62,7 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           onComment={handleComment}
           onShare={handleShare}
           showLink={true}
+          isDetailPage={false}
         />
       ))}
     </div>

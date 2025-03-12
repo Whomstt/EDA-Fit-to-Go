@@ -10,9 +10,10 @@ export interface PostCardProps {
   onComment: (id: number) => Promise<void>;
   onShare: (id: number) => Promise<void>;
   showLink: boolean;
+  isDetailPage: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, showLink }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, showLink, isDetailPage = false }) => {
   const [localPost, setLocalPost] = useState({ ...post, liked: false });
 
   const handleLike = async () => {
@@ -35,15 +36,17 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, s
 
   const handleComment = async () => {
     try {
-      setLocalPost({
-        ...localPost,
-        commentCount: localPost.commentCount + 1,
-      });
-      await onComment(localPost.id);
-    } catch (error) {
-      console.error('Error commenting on post:', error);
-    }
+      if(isDetailPage)
+        setLocalPost({
+          ...localPost,
+          commentCount: localPost.commentCount + 1,
+        });
+        await onComment(localPost.id);
+      } catch (error) {
+        console.error('Error commenting on post:', error);
+      }
   };
+
 
   const handleShare = async () => {
     try {

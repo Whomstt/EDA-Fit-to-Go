@@ -16,8 +16,13 @@ export const handleCommentAction = (post: Post): Post => ({
   commentCount: post.commentCount + 1,
 });
 
+let isHandlingShare = false;
 
 export const handleShareAction = (post: Post): Post => {
+  if (isHandlingShare) {
+    return post;
+  }
+  isHandlingShare = true;
   const updatedPost = {
     ...post,
     shareCount: post.shareCount + 1,
@@ -33,7 +38,11 @@ export const handleShareAction = (post: Post): Post => {
     .catch((err) => {
       console.error('Failed to copy: ', err);
       alert('Failed to copy link');
-    });
+    })
+    .finally(() => {
+      isHandlingShare = false;
+    }
+  );
 
   return updatedPost;
 };

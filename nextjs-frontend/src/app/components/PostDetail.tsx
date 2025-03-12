@@ -90,6 +90,7 @@ export default function PostDetail({ id }: { id: string }) {
         onComment={handleComment}
         onShare={handleShare}
         showLink={false}
+        isDetailPage={true}
       />
     </main>
   );
