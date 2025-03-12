@@ -10,12 +10,20 @@ export const updatePostLike = (post: Post, liked: boolean): Post => ({
 export const revertPostLike = (post: Post, liked: boolean): Post =>
   updatePostLike(post, !liked);
 
-export const handleCommentAction = (id: number): void => {
-  console.log(`Comment button clicked for post ${id}`);
-};
 
-export const handleShareAction = (id: number): void => {
-  const shareLink = `${window.location.origin}/CS4227-Fit-to-Go/post/${id}`;
+export const handleCommentAction = (post: Post): Post => ({
+  ...post,
+  commentCount: post.commentCount + 1,
+});
+
+
+export const handleShareAction = (post: Post): Post => {
+  const updatedPost = {
+    ...post,
+    shareCount: post.shareCount + 1,
+  };
+
+  const shareLink = `${window.location.origin}/CS4227-Fit-to-Go/post/${post.id}`;
 
   // Try to copy the link to the clipboard
   navigator.clipboard.writeText(shareLink)
@@ -26,4 +34,6 @@ export const handleShareAction = (id: number): void => {
       console.error('Failed to copy: ', err);
       alert('Failed to copy link');
     });
+
+  return updatedPost;
 };

@@ -58,4 +58,14 @@ public class PostController {
     public ResponseEntity<String> decrementLikeCount(@PathVariable Long id) {
         return modifyPostCount(id, "decrement", "likecount");
     }
+
+    @PutMapping("{id}/increment/sharecount")
+    public ResponseEntity<String> incrementShareCount(@PathVariable Long id) {
+        return modifyPostCount(id, "increment", "sharecount");
+    }
+
+    @PutMapping("{id}/increment/commentcount")
+    public ResponseEntity<String> incrementCommentCount(@PathVariable Long id) {
+        return modifyPostCount(id, "increment", "commentcount");
+    }
 }

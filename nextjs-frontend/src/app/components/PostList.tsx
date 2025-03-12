@@ -1,15 +1,14 @@
 'use client';
 
-
 import React, { useEffect, useState } from 'react';
 import PostCard from './PostCard';
 import { Post } from '../types/Post';
-import { toggleLike } from '../api/posts';
+import { toggleLike, actionComment, actionShare } from '../api/posts';
 import {
   updatePostLike,
   revertPostLike,
   handleCommentAction,
-  handleShareAction
+  handleShareAction,
 } from '../utils/postActions';
 
 interface PostListProps {
@@ -36,6 +35,28 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
     }
   };
 
+  const handleComment = async (id: number) => {
+    setLocalPosts(prevPosts =>
+      prevPosts.map(post => (post.id === id ? handleCommentAction(post) : post))
+    );
+    try {
+      await actionComment(id);
+    } catch (error) {
+      console.error('Error commenting on post:', error);
+    }
+  };
+
+  const handleShare = async (id: number) => {
+    setLocalPosts(prevPosts =>
+      prevPosts.map(post => (post.id === id ? handleShareAction(post) : post))
+    );
+    try {
+      await actionShare(id);
+    } catch (error) {
+      console.error('Error sharing post:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {localPosts.map(post => (
@@ -43,8 +64,8 @@ const PostList: React.FC<PostListProps> = ({ posts }) => {
           key={post.id}
           post={post}
           onLike={handleLike}
-          onComment={handleCommentAction}
-          onShare={handleShareAction}
+          onComment={handleComment}
+          onShare={handleShare}
           showLink={true}
         />
       ))}

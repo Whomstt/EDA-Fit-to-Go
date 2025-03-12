@@ -33,7 +33,10 @@ public class PostEventListener {
         switch (action.toLowerCase()) {
             case "increment" -> {
                 switch (type.toLowerCase()) {
-                    case "likecount" -> post.setLikeCount(post.getLikeCount() + 1);                }
+                    case "likecount" -> post.setLikeCount(post.getLikeCount() + 1);
+                    case "sharecount" -> post.setShareCount(post.getShareCount() + 1);
+                    case "commentcount" -> post.setCommentCount(post.getCommentCount() + 1);
+                }
             }
             case "decrement" -> {
                 switch (type.toLowerCase()) {

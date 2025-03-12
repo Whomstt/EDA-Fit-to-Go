@@ -4,12 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Post } from '../types/Post';
 
-
 export interface PostCardProps {
   post: Post;
   onLike: (id: number, liked: boolean) => Promise<void>;
-  onComment: (id: number) => void;
-  onShare: (id: number) => void;
+  onComment: (id: number) => Promise<void>;
+  onShare: (id: number) => Promise<void>;
   showLink: boolean;
 }
 
@@ -31,6 +30,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, s
         liked: !localPost.liked,
         likeCount: localPost.liked ? localPost.likeCount - 1 : localPost.likeCount + 1,
       });
+    }
+  };
+
+  const handleComment = async () => {
+    try {
+      setLocalPost({
+        ...localPost,
+        commentCount: localPost.commentCount + 1,
+      });
+      await onComment(localPost.id);
+    } catch (error) {
+      console.error('Error commenting on post:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      setLocalPost({
+        ...localPost,
+        shareCount: localPost.shareCount + 1,
+      });
+      await onShare(localPost.id);
+    } catch (error) {
+      console.error('Error sharing post:', error);
     }
   };
 
@@ -58,13 +81,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, s
           {localPost.liked ? 'Unlike' : 'Like'}
         </button>
         <button
-          onClick={() => onComment(localPost.id)}
+          onClick={handleComment}
           className="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white"
         >
           Comment
         </button>
         <button
-          onClick={() => onShare(localPost.id)}
+          onClick={handleShare}
           className="px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white"
         >
           Share

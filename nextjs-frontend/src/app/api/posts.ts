@@ -11,6 +11,26 @@ export const toggleLike = async (id: number, liked: boolean): Promise<void> => {
   }
 };
 
+export const actionComment = async (id: number): Promise<void> => {
+  const endpoint = "increment";
+  const response = await fetch(`http://localhost:8080/api/post/${id}/${endpoint}/commentcount`, {
+    method: 'PUT'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to increment comment count: ${await response.text()}`);
+  }
+};
+
+export const actionShare = async (id: number): Promise<void> => {
+  const endpoint = "increment";
+  const response = await fetch(`http://localhost:8080/api/post/${id}/${endpoint}/sharecount`, {
+    method: 'PUT'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to increment share count: ${await response.text()}`);
+  }
+};
+
 export const fetchPostById = async (id: number): Promise<Post> => {
   const response = await fetch(`http://localhost:8080/api/post/${id}`);
   if (!response.ok) {

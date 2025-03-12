@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import PostCard from './PostCard';
 import { Post } from '../types/Post';
-import { fetchPostById, toggleLike } from '../api/posts';
+import { fetchPostById, toggleLike, actionComment, actionShare } from '../api/posts';
 import {
   updatePostLike,
   revertPostLike,
@@ -15,6 +16,7 @@ import { mockPosts } from '../lib/mockPosts';
 
 export default function PostDetail({ id }: { id: string }) {
   const [post, setPost] = useState<Post | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!id) return;
@@ -46,6 +48,26 @@ export default function PostDetail({ id }: { id: string }) {
     }
   };
 
+  const handleComment = async (postId: number) => {
+    if (!post) return;
+    try {
+      await actionComment(postId);
+      setPost(handleCommentAction(post));
+    } catch (error) {
+      console.error('Error commenting on post:', error);
+    }
+  };
+
+  const handleShare = async (postId: number) => {
+    if (!post) return;
+    try {
+      await actionShare(postId);
+      setPost(handleShareAction(post));
+    } catch (error) {
+      console.error('Error sharing post:', error);
+    }
+  };
+
   if (!post) {
     return (
       <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -56,11 +78,17 @@ export default function PostDetail({ id }: { id: string }) {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <button
+        className="absolute top-32 left-4 p-2 bg-blue-500 hover:bg-blue-600 shadow-md rounded-lg w-1/10"
+        onClick={() => router.back()}
+      >
+        Back
+      </button>
       <PostCard
         post={post}
         onLike={handleLike}
-        onComment={handleCommentAction}
-        onShare={handleShareAction}
+        onComment={handleComment}
+        onShare={handleShare}
         showLink={false}
       />
     </main>
