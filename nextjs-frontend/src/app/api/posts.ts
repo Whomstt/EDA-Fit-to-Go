@@ -1,4 +1,6 @@
 import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
+
 
 
 export const toggleLike = async (id: number, liked: boolean): Promise<void> => {
@@ -47,3 +49,16 @@ export const fetchPosts = async (): Promise<Post[]> => {
   }
   return await response.json();
 };
+
+export const fetchCommentsByPostId = async (id: number): Promise<Comment[]> => {
+  const response = await fetch(`http://localhost:8080/api/post/${id}/comments`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch comments');
+  }
+  const text = await response.text();
+  try {
+    return JSON.parse(text) as Comment[];
+  } catch (error) {
+    throw new Error("Invalid JSON response: " + error);
+  }
+}

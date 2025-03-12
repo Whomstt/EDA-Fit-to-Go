@@ -7,10 +7,17 @@ CREATE TABLE posts (
 );
 
 INSERT INTO posts (title, likecount, commentcount, sharecount)
-VALUES ('First Post', 5, 6, 1);
+VALUES ('First Post', 5, 6, 1),
+       ('Second Post', 3, 4, 8),
+       ('Third Post', 7, 2, 3);
 
-INSERT INTO posts (title, likecount, commentcount, sharecount)
-VALUES ('Second Post', 3, 4, 8);
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    post_id INT REFERENCES posts(id) ON DELETE CASCADE,
+    comment VARCHAR(255)
+);
 
-INSERT INTO posts (title, likecount, commentcount, sharecount)
-VALUES ('Third Post', 7, 2, 3);
+INSERT INTO comments (post_id, comment)
+VALUES (1, 'Great post!'),
+       (2, 'I agree!'),
+       (3, 'Interesting read!');

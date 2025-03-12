@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PostCard from './PostCard';
 import { Post } from '../types/Post';
-import { fetchPostById, toggleLike, actionComment, actionShare } from '../api/posts';
+import { fetchPostById, fetchCommentsByPostId, toggleLike, actionComment, actionShare } from '../api/posts';
 import {
   updatePostLike,
   revertPostLike,
@@ -12,21 +12,29 @@ import {
   handleShareAction,
 } from '../utils/postActions';
 import { mockPosts } from '../lib/mockPosts';
-
+import { Comment } from '../types/Comment';
 
 export default function PostDetail({ id }: { id: string }) {
   const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     if (!id) return;
+
+    // Fetch post and comments
     (async () => {
       try {
-        // Convert the id to a number and fetch the post data
-        const data = await fetchPostById(Number(id)); // Convert id to a number
+        // Fetch post details
+        const data = await fetchPostById(Number(id));
         setPost({ ...data, liked: false });
+
+        // Fetch comments for the post
+        const commentsData = await fetchCommentsByPostId(Number(id));
+        setComments(commentsData);
       } catch (error) {
-        console.error('Error fetching post, falling back to mock data:', error);
+        console.error('Error fetching post or comments:', error);
+
         // Use mock post if available
         const fallback = mockPosts.find(p => p.id.toString() === id);
         if (fallback) {
@@ -35,7 +43,6 @@ export default function PostDetail({ id }: { id: string }) {
       }
     })();
   }, [id]);
-  
 
   const handleLike = async (postId: number, liked: boolean) => {
     if (!post) return;
@@ -92,6 +99,18 @@ export default function PostDetail({ id }: { id: string }) {
         showLink={false}
         isDetailPage={true}
       />
+      <section className="w-full max-w-2xl p-4 mt-4 bg-white shadow-md rounded-lg text-black">
+      <h2 className="text-xl font-bold mb-4">Comments</h2>
+      {comments.length > 0 ? (
+        comments.map(comment => (
+          <div key={comment.id} className="p-2 border-b border-gray-200">
+            <p>{comment.comment}</p>
+          </div>
+        ))
+      ) : (
+        <p>No comments yet.</p>
+      )}
+    </section>
     </main>
   );
 }
