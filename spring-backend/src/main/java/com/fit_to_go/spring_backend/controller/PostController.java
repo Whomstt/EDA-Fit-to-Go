@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -81,4 +83,21 @@ public class PostController {
     public ResponseEntity<String> incrementCommentCount(@PathVariable Long id) {
         return modifyPostCount(id, "increment", "commentcount");
     }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<Comment> addComment(@PathVariable Long id, @RequestBody Comment commentRequest) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        // Associate the fetched Post with the new comment
+        commentRequest.setPost(postOptional.get());
+        // Save the new comment in the database
+        Comment savedComment = commentRepository.save(commentRequest);
+        // Publish an event to increment the comment count for this post
+        postEventPublisher.publishPostEvent(id, "increment", "commentcount");
+        return ResponseEntity.ok(savedComment);
+    }
+
+
 }

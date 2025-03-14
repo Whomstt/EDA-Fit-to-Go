@@ -51,7 +51,10 @@ export const fetchPosts = async (): Promise<Post[]> => {
 };
 
 export const fetchCommentsByPostId = async (id: number): Promise<Comment[]> => {
-  const response = await fetch(`http://localhost:8080/api/post/${id}/comments`);
+  const response = await fetch(`http://localhost:8080/api/post/${id}/comments`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch comments');
   }
@@ -61,4 +64,17 @@ export const fetchCommentsByPostId = async (id: number): Promise<Comment[]> => {
   } catch (error) {
     throw new Error("Invalid JSON response: " + error);
   }
-}
+};
+
+export const addComment = async (id: number, commentText: string): Promise<Comment> => {
+  const response = await fetch(`http://localhost:8080/api/post/${id}/comments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comment: commentText }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to add comment: ${await response.text()}`);
+  }
+  return await response.json();
+};
+
