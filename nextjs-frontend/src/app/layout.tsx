@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,22 +29,20 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
-        {/* Header with logo and title */}
         <header className="bg-blue-600 text-white py-4 shadow-lg">
           <div className="container mx-auto flex items-center space-x-4">
-            {/* Logo */}
-            <img
-              src="/CS4227-Fit-to-Go/images/icon512.png"
-              alt="Fit to Go Logo"
-              className="h-12 w-12"
-            />
-            {/* Title */}
-            <h1 className="text-3xl font-bold">Fit to Go</h1>
+            <Link href="/" className="flex items-center space-x-2">
+              <img
+                src="/CS4227-Fit-to-Go/images/icon512.png"
+                alt="Fit to Go Logo"
+                className="h-12 w-12"
+              />
+              <h1 className="text-3xl font-bold">Fit to Go</h1>
+            </Link>
           </div>
         </header>
-        {/* Main content */}
         <main className="container mx-auto mt-4">{children}</main>
       </body>
     </html>

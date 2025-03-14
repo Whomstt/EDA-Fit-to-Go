@@ -84,33 +84,34 @@ export default function PostDetail({ id }: { id: string }) {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <button
-        className="absolute top-32 left-4 p-2 bg-blue-500 hover:bg-blue-600 shadow-md rounded-lg w-1/10"
-        onClick={() => router.back()}
-      >
-        Back
-      </button>
-      <PostCard
-        post={post}
-        onLike={handleLike}
-        onComment={handleComment}
-        onShare={handleShare}
-        showLink={false}
-        isDetailPage={true}
-      />
-      <section className="w-full max-w-2xl p-4 mt-4 bg-white shadow-md rounded-lg text-black">
-      <h2 className="text-xl font-bold mb-4">Comments</h2>
-      {comments.length > 0 ? (
-        comments.map(comment => (
-          <div key={comment.id} className="p-2 border-b border-gray-200">
-            <p>{comment.comment}</p>
-          </div>
-        ))
-      ) : (
-        <p>No comments yet.</p>
-      )}
-    </section>
-    </main>
+<main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+  {/* <button
+    className="absolute top-4 left-4 p-2 bg-blue-500 hover:bg-blue-600 shadow-md rounded-lg"
+    onClick={() => router.back()}
+  >
+    Back
+  </button> */}
+  <PostCard
+    post={post}
+    onLike={handleLike}
+    onComment={handleComment}
+    onShare={handleShare}
+    showLink={false}
+    isDetailPage={true}
+  />
+  <section className="w-full max-w-2xl p-4 mt-4 bg-white shadow-md rounded-lg text-black">
+    <h2 className="text-xl font-bold mb-4">Comments</h2>
+    {comments.length > 0 ? (
+      comments.map((comment) => (
+        <div key={comment.id} className="p-2 border-b border-gray-200">
+          <p>{comment.comment}</p>
+        </div>
+      ))
+    ) : (
+      <p>No comments yet.</p>
+    )}
+  </section>
+</main>
+
   );
 }
