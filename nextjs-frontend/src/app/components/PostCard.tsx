@@ -21,7 +21,6 @@ const PostCard: React.FC<PostCardProps> = ({
   showLink,
   isDetailPage = false,
 }) => {
-  // Use the post prop directly instead of maintaining local state
 
   const handleLike = async () => {
     try {

@@ -30,7 +30,6 @@ export const handleShareAction = (post: Post): Post => {
 
   const shareLink = `${window.location.origin}/CS4227-Fit-to-Go/post/${post.id}`;
 
-  // Try to copy the link to the clipboard
   navigator.clipboard.writeText(shareLink)
     .then(() => {
       alert('Link copied to clipboard!');

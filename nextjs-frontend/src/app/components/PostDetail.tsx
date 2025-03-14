@@ -9,7 +9,7 @@ import {
   fetchCommentsByPostId, 
   toggleLike, 
   actionShare,
-  addComment // The API function for adding a comment
+  addComment
 } from '../api/posts';
 import {
   updatePostLike,
@@ -17,12 +17,13 @@ import {
   handleShareAction,
 } from '../utils/postActions';
 import { mockPosts } from '../lib/mockPosts';
+import { mockComments } from '../lib/mockComments';
 import { Comment } from '../types/Comment';
 
 export default function PostDetail({ id }: { id: string }) {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState<string>(''); // Controlled input state
+  const [newComment, setNewComment] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function PostDetail({ id }: { id: string }) {
 
     (async () => {
       try {
+        // Try to fetch post data and comments from API
         const data = await fetchPostById(Number(id));
         setPost({ ...data, liked: false });
 
@@ -37,10 +39,15 @@ export default function PostDetail({ id }: { id: string }) {
         setComments(commentsData);
       } catch (error) {
         console.error('Error fetching post or comments:', error);
-        const fallback = mockPosts.find(p => p.id.toString() === id);
-        if (fallback) {
-          setPost(fallback);
-        }
+        // Fallback for post data
+        const fallbackPost = mockPosts.find(p => p.id.toString() === id);
+        if (fallbackPost) {
+          setPost(fallbackPost);
+
+        // Fallback for comments specific to this post
+        const fallbackComments = mockComments.filter(c => c.postId === fallbackPost.id);
+        setComments(fallbackComments);
+      }
       }
     })();
   }, [id]);
@@ -56,10 +63,12 @@ export default function PostDetail({ id }: { id: string }) {
     }
   };
 
-  // The onComment passed to PostCard can simply be a navigation helper if needed.
   const handleCommentNavigation = async (postId: number) => {
-    // In this detail view, the PostCard comment button just scrolls to the text area.
-    // No additional logic is needed here.
+    const commentTextArea = document.getElementById('comment-textarea');
+    if (commentTextArea) {
+      commentTextArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      (commentTextArea as HTMLTextAreaElement).focus();
+    }
   };
 
   const handleShare = async (postId: number) => {
@@ -72,11 +81,10 @@ export default function PostDetail({ id }: { id: string }) {
     }
   };
 
-  // New function for handling the Add Comment button click with optimistic UI update
   const handleAddComment = async () => {
     if (!post || !newComment.trim()) return;
 
-    // Optimistically update the UI: increment the comment count immediately.
+    // Optimistically update the UI
     setPost(prevPost => ({
       ...prevPost!,
       commentCount: prevPost!.commentCount + 1,
@@ -111,7 +119,7 @@ export default function PostDetail({ id }: { id: string }) {
       <PostCard
         post={post}
         onLike={handleLike}
-        onComment={handleCommentNavigation} // This now only navigates/scrolls to the comment area
+        onComment={handleCommentNavigation}
         onShare={handleShare}
         showLink={false}
         isDetailPage={true}
@@ -128,7 +136,6 @@ export default function PostDetail({ id }: { id: string }) {
           <p>No comments yet.</p>
         )}
 
-        {/* Comment Input Area */}
         <div className="mt-4">
           <textarea
             id="comment-textarea"
