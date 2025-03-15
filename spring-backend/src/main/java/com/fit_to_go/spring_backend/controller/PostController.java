@@ -26,10 +26,20 @@ public class PostController {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public PostController(PostEventPublisher postEventPublisher, PostRepository postRepository, CommentRepository commentRepository) {
+    public PostController(PostEventPublisher postEventPublisher, PostRepository postRepository,
+            CommentRepository commentRepository) {
         this.postEventPublisher = postEventPublisher;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+    }
+    
+    private ResponseEntity<String> modifyPostCount(Long id, String action, String type) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()) {
+            postEventPublisher.publishPostEvent(id, action, type);
+            return ResponseEntity.ok("Event published: " + action + ":" + type);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/all")
@@ -53,15 +63,6 @@ public class PostController {
         }
         List<Comment> comments = commentRepository.findByPostId(id);
         return ResponseEntity.ok(comments);
-    }
-
-    private ResponseEntity<String> modifyPostCount(Long id, String action, String type) {
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isPresent()) {
-            postEventPublisher.publishPostEvent(id, action, type);
-            return ResponseEntity.ok("Event published: " + action + ":" + type);
-        }
-        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("{id}/increment/likecount")
@@ -90,14 +91,10 @@ public class PostController {
         if (!postOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        // Associate the fetched Post with the new comment
         commentRequest.setPost(postOptional.get());
-        // Save the new comment in the database
         Comment savedComment = commentRepository.save(commentRequest);
-        // Publish an event to increment the comment count for this post
         postEventPublisher.publishPostEvent(id, "increment", "commentcount");
+        postEventPublisher.publishCommentEvent(savedComment);
         return ResponseEntity.ok(savedComment);
     }
-
-
 }
