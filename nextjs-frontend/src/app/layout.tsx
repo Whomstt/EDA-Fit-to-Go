@@ -43,7 +43,12 @@ export default function RootLayout({
             </Link>
           </div>
         </header>
-        <main className="container mx-auto mt-4">{children}</main>
+        <main className="container mx-auto mt-4">
+          <div className="bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500 p-4 mb-4">
+            Note: Back-end doesn't work on GitHub Pages but works fully when hosted through Docker locally.
+          </div>
+          {children}
+        </main>
       </body>
     </html>
   );
