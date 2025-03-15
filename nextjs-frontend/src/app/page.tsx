@@ -2,7 +2,7 @@ import PostList from './components/PostList';
 import { mockPosts } from './lib/mockPosts';
 
 const HomePage = async () => {
-  let posts = mockPosts; // Default to mock posts
+  let posts = mockPosts;
 
   try {
 

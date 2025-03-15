@@ -28,7 +28,6 @@ public class Comment {
     @Column(name = "comment", nullable = false)
     private String comment;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

@@ -37,7 +37,6 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

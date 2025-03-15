@@ -7,9 +7,9 @@ CREATE TABLE posts (
 );
 
 INSERT INTO posts (title, likecount, commentcount, sharecount)
-VALUES ('First Post', 5, 6, 1),
-       ('Second Post', 3, 4, 8),
-       ('Third Post', 7, 2, 3);
+VALUES ('First Post', 5, 1, 1),
+       ('Second Post', 3, 1, 8),
+       ('Third Post', 7, 1, 3);
 
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,

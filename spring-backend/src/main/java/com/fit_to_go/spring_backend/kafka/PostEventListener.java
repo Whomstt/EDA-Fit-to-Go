@@ -29,7 +29,6 @@ public class PostEventListener {
         
         switch (topic) {
             case "post-events-topic" -> {
-                // Handle post events as before
                 String[] parts = message.split(":");
                 Long postId = Long.valueOf(parts[0]);
                 String action = parts[1];

@@ -31,7 +31,6 @@ export default function PostDetail({ id }: { id: string }) {
 
     (async () => {
       try {
-        // Try to fetch post data and comments from API
         const data = await fetchPostById(Number(id));
         setPost({ ...data, liked: false });
 
@@ -39,12 +38,10 @@ export default function PostDetail({ id }: { id: string }) {
         setComments(commentsData);
       } catch (error) {
         console.error('Error fetching post or comments:', error);
-        // Fallback for post data
         const fallbackPost = mockPosts.find(p => p.id.toString() === id);
         if (fallbackPost) {
           setPost(fallbackPost);
 
-        // Fallback for comments specific to this post
         const fallbackComments = mockComments.filter(c => c.postId === fallbackPost.id);
         setComments(fallbackComments);
       }
@@ -84,7 +81,6 @@ export default function PostDetail({ id }: { id: string }) {
   const handleAddComment = async () => {
     if (!post || !newComment.trim()) return;
 
-    // Optimistically update the UI
     setPost(prevPost => ({
       ...prevPost!,
       commentCount: prevPost!.commentCount + 1,
@@ -92,13 +88,10 @@ export default function PostDetail({ id }: { id: string }) {
 
     try {
       const addedComment = await addComment(post.id, newComment);
-      // Append the new comment to the list of comments
       setComments(prevComments => [...prevComments, addedComment]);
-      // Clear the text area
       setNewComment('');
     } catch (error) {
       console.error('Error adding comment:', error);
-      // Roll back the optimistic update if the API call fails
       setPost(prevPost => ({
         ...prevPost!,
         commentCount: prevPost!.commentCount - 1,
@@ -116,42 +109,47 @@ export default function PostDetail({ id }: { id: string }) {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <PostCard
-        post={post}
-        onLike={handleLike}
-        onComment={handleCommentNavigation}
-        onShare={handleShare}
-        showLink={false}
-        isDetailPage={true}
+  <PostCard
+    post={post}
+    onLike={handleLike}
+    onComment={handleCommentNavigation}
+    onShare={handleShare}
+    showLink={false}
+    isDetailPage={true}
+  />
+  <section className="w-full max-w-2xl p-4 mt-4 bg-white shadow-md rounded-lg text-black flex flex-col">
+    <h2 className="text-xl font-bold mb-4">Comments</h2>
+    <div
+      className="overflow-y-auto border border-gray-200 rounded-lg p-2"
+      style={{ maxHeight: '300px' }}
+    >
+      {comments.length > 0 ? (
+        comments.map((comment) => (
+          <div key={comment.id} className="p-2 border-b border-gray-200">
+            <p>{comment.comment}</p>
+          </div>
+        ))
+      ) : (
+        <p>No comments yet.</p>
+      )}
+    </div>
+    <div className="mt-4">
+      <textarea
+        id="comment-textarea"
+        className="w-full border border-gray-300 p-2 rounded-lg"
+        placeholder="Add your comment..."
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
       />
-      <section className="w-full max-w-2xl p-4 mt-4 bg-white shadow-md rounded-lg text-black">
-        <h2 className="text-xl font-bold mb-4">Comments</h2>
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <div key={comment.id} className="p-2 border-b border-gray-200">
-              <p>{comment.comment}</p>
-            </div>
-          ))
-        ) : (
-          <p>No comments yet.</p>
-        )}
+      <button
+        onClick={handleAddComment}
+        className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+      >
+        Add Comment
+      </button>
+    </div>
+  </section>
+</main>
 
-        <div className="mt-4">
-          <textarea
-            id="comment-textarea"
-            className="w-full border border-gray-300 p-2 rounded-lg"
-            placeholder="Add your comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <button
-            onClick={handleAddComment}
-            className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
-          >
-            Add Comment
-          </button>
-        </div>
-      </section>
-    </main>
   );
 }
