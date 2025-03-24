@@ -76,6 +76,13 @@ services:
       - zookeeper
     networks:
       - app-network
+  sonarqube:
+    container_name: fit-to-go-sonarqube
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+    networks:
+      - app-network
 
     
 networks:
