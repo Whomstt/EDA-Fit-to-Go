@@ -12,11 +12,12 @@ import com.fit_to_go.spring_backend.entity.Comment;
 public class PostEventPublisher {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private static final Logger logger = LoggerFactory.getLogger(PostEventPublisher.class);
 
-    public PostEventPublisher(KafkaTemplate<String, String> kafkaTemplate) {
+    public PostEventPublisher(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public void publishPostEvent(Long postId, String action, String type) {
