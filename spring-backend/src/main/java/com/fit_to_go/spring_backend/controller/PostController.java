@@ -26,6 +26,9 @@ public class PostController {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    private static final String INCREMENT = "increment";
+    private static final String DECREMENT = "decrement";
+
     public PostController(PostEventPublisher postEventPublisher, PostRepository postRepository,
             CommentRepository commentRepository) {
         this.postEventPublisher = postEventPublisher;
@@ -67,22 +70,22 @@ public class PostController {
 
     @PutMapping("{id}/increment/likecount")
     public ResponseEntity<String> incrementLikeCount(@PathVariable Long id) {
-        return modifyPostCount(id, "increment", "likecount");
+        return modifyPostCount(id, INCREMENT, "likecount");
     }
 
     @PutMapping("{id}/decrement/likecount")
     public ResponseEntity<String> decrementLikeCount(@PathVariable Long id) {
-        return modifyPostCount(id, "decrement", "likecount");
+        return modifyPostCount(id, DECREMENT, "likecount");
     }
 
     @PutMapping("{id}/increment/sharecount")
     public ResponseEntity<String> incrementShareCount(@PathVariable Long id) {
-        return modifyPostCount(id, "increment", "sharecount");
+        return modifyPostCount(id, INCREMENT, "sharecount");
     }
 
     @PutMapping("{id}/increment/commentcount")
     public ResponseEntity<String> incrementCommentCount(@PathVariable Long id) {
-        return modifyPostCount(id, "increment", "commentcount");
+        return modifyPostCount(id, INCREMENT, "commentcount");
     }
 
     @PostMapping("/{id}/comments")
@@ -93,7 +96,7 @@ public class PostController {
         }
         commentRequest.setPost(postOptional.get());
         Comment savedComment = commentRepository.save(commentRequest);
-        postEventPublisher.publishPostEvent(id, "increment", "commentcount");
+        postEventPublisher.publishPostEvent(id, INCREMENT, "commentcount");
         postEventPublisher.publishCommentEvent(savedComment);
         return ResponseEntity.ok(savedComment);
     }

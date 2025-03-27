@@ -43,11 +43,13 @@ public class PostEventListener {
                             case "likecount" -> post.setLikeCount(post.getLikeCount() + 1);
                             case "sharecount" -> post.setShareCount(post.getShareCount() + 1);
                             case "commentcount" -> post.setCommentCount(post.getCommentCount() + 1);
+                            default -> throw new RuntimeException("Invalid type: " + type);
                         }
                     }
                     case "decrement" -> {
                         switch (type.toLowerCase()) {
                             case "likecount" -> post.setLikeCount(post.getLikeCount() - 1);
+                            default -> throw new RuntimeException("Invalid type: " + type);
                         }
                     }
                     default -> throw new RuntimeException("Invalid action: " + action);

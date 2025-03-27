@@ -1,6 +1,7 @@
 package com.fit_to_go.spring_backend.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -82,6 +83,44 @@ public class PostControllerTests {
     }
 
     @Test
+    public void testGetPostByIdNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/post/1"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testGetCommentsByPostId() throws Exception {
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setComment("A comment");
+
+        when(postRepository.existsById(1L)).thenReturn(true);
+        when(commentRepository.findByPostId(1L)).thenReturn(Collections.singletonList(comment));
+
+        mockMvc.perform(get("/api/post/1/comments"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].comment").value("A comment"));
+
+        verify(postRepository, times(1)).existsById(1L);
+        verify(commentRepository, times(1)).findByPostId(1L);
+    }
+
+    @Test
+    public void testGetCommentsByPostIdNotFound() throws Exception {
+        when(postRepository.existsById(1L)).thenReturn(false);
+
+        mockMvc.perform(get("/api/post/1/comments"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).existsById(1L);
+    }
+
+    @Test
     public void testIncrementLikeCount() throws Exception {
         Post post = new Post();
         post.setId(1L);
@@ -94,6 +133,91 @@ public class PostControllerTests {
 
         verify(postRepository, times(1)).findById(1L);
         verify(postEventPublisher, times(1)).publishPostEvent(1L, "increment", "likecount");
+    }
+
+    @Test
+    public void testIncrementLikeCountNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/post/1/increment/likecount"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testDecrementLikeCount() throws Exception {
+        Post post = new Post();
+        post.setId(1L);
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        mockMvc.perform(put("/api/post/1/decrement/likecount"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Event published: decrement:likecount"));
+
+        verify(postRepository, times(1)).findById(1L);
+        verify(postEventPublisher, times(1)).publishPostEvent(1L, "decrement", "likecount");
+    }
+
+    @Test
+    public void testDecrementLikeCountNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/post/1/decrement/likecount"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testIncrementShareCount() throws Exception {
+        Post post = new Post();
+        post.setId(1L);
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        mockMvc.perform(put("/api/post/1/increment/sharecount"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Event published: increment:sharecount"));
+
+        verify(postRepository, times(1)).findById(1L);
+        verify(postEventPublisher, times(1)).publishPostEvent(1L, "increment", "sharecount");
+    }
+
+    @Test
+    public void testIncrementShareCountNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/post/1/increment/sharecount"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testIncrementCommentCount() throws Exception {
+        Post post = new Post();
+        post.setId(1L);
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        mockMvc.perform(put("/api/post/1/increment/commentcount"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Event published: increment:commentcount"));
+
+        verify(postRepository, times(1)).findById(1L);
+        verify(postEventPublisher, times(1)).publishPostEvent(1L, "increment", "commentcount");
+    }
+
+    @Test
+    public void testIncrementCommentCountNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/post/1/increment/commentcount"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -119,5 +243,17 @@ public class PostControllerTests {
         verify(commentRepository, times(1)).save(any(Comment.class));
         verify(postEventPublisher, times(1)).publishPostEvent(1L, "increment", "commentcount");
         verify(postEventPublisher, times(1)).publishCommentEvent(any(Comment.class));
+    }
+
+    @Test
+    public void testAddCommentNotFound() throws Exception {
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/post/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"comment\": \"Test Comment\"}"))
+                .andExpect(status().isNotFound());
+
+        verify(postRepository, times(1)).findById(1L);
     }
 }
