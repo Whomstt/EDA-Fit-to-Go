@@ -63,6 +63,60 @@ public class PostEventListenerTests {
     }
 
     @Test
+    public void testListenPostIncrementShareCountEvent() {
+        Post post = new Post();
+        post.setId(2L);
+        post.setShareCount(3);
+
+        when(postRepository.findById(2L)).thenReturn(Optional.of(post));
+
+        String message = "2:increment:sharecount";
+        postEventListener.listenEvent(message, "post-events-topic");
+
+        verify(postRepository, times(1)).findById(2L);
+        verify(postRepository, times(1)).save(post);
+        assert post.getShareCount() == 4;
+    }
+
+    @Test
+    public void testListenPostIncrementCommentCountEvent() {
+        Post post = new Post();
+        post.setId(3L);
+        post.setCommentCount(7);
+
+        when(postRepository.findById(3L)).thenReturn(Optional.of(post));
+
+        String message = "3:increment:commentcount";
+        postEventListener.listenEvent(message, "post-events-topic");
+
+        verify(postRepository, times(1)).findById(3L);
+        verify(postRepository, times(1)).save(post);
+        assert post.getCommentCount() == 8;
+    }
+
+    @Test
+    public void testListenPostDecrementInvalidTypeEvent() {
+        Post post = new Post();
+        post.setId(4L);
+        post.setLikeCount(10);
+        post.setShareCount(5);
+
+        when(postRepository.findById(4L)).thenReturn(Optional.of(post));
+
+        String message = "4:decrement:sharecount";
+
+        try {
+            postEventListener.listenEvent(message, "post-events-topic");
+            assert false : "Expected RuntimeException for invalid type in decrement action";
+        } catch (RuntimeException e) {
+            assert e.getMessage().contains("Invalid type");
+        }
+
+        verify(postRepository, times(1)).findById(4L);
+        verify(postRepository, never()).save(any());
+    }
+
+    @Test
     public void testListenCommentEvent() throws Exception {
         String commentJson = "{\"id\":1,\"comment\":\"Test Comment\"}";
 
@@ -70,7 +124,16 @@ public class PostEventListenerTests {
 
         verify(postRepository, never()).findById(any());
         verify(postRepository, never()).save(any());
-        // No exception should be thrown, and the logger should record the processed comment.
+    }
+
+    @Test
+    public void testListenCommentEventJsonParsingError() {
+        String invalidJson = "invalid-json-format";
+
+        postEventListener.listenEvent(invalidJson, "comment-events-topic");
+
+        verify(postRepository, never()).findById(any());
+        verify(postRepository, never()).save(any());
     }
 
     @Test
@@ -81,7 +144,6 @@ public class PostEventListenerTests {
 
         verify(postRepository, never()).findById(any());
         verify(postRepository, never()).save(any());
-        // No processing should occur for an unknown topic.
     }
 
     @Test
@@ -92,8 +154,25 @@ public class PostEventListenerTests {
 
         try {
             postEventListener.listenEvent(message, "post-events-topic");
+            assert false : "Expected RuntimeException for invalid action";
         } catch (RuntimeException e) {
             assert e.getMessage().contains("Invalid action: invalid");
+        }
+
+        verify(postRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testInvalidPostTypeForIncrement() {
+        String message = "1:increment:invalid";
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(new Post()));
+
+        try {
+            postEventListener.listenEvent(message, "post-events-topic");
+            assert false : "Expected RuntimeException for invalid type";
+        } catch (RuntimeException e) {
+            assert e.getMessage().contains("Invalid type: invalid");
         }
 
         verify(postRepository, times(1)).findById(1L);
@@ -107,6 +186,7 @@ public class PostEventListenerTests {
 
         try {
             postEventListener.listenEvent(message, "post-events-topic");
+            assert false : "Expected RuntimeException for post not found";
         } catch (RuntimeException e) {
             assert e.getMessage().contains("Post not found");
         }
