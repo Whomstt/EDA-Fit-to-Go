@@ -1,4 +1,4 @@
-package com.fit_to_go.spring_backend;
+package com.fit_to_go.spring_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
