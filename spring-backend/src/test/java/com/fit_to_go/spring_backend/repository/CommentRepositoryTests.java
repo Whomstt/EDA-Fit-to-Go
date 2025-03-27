@@ -14,7 +14,7 @@ import com.fit_to_go.spring_backend.entity.Post;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class CommentRepositoryTests {
+class CommentRepositoryTests {
 
     @Autowired
     private CommentRepository commentRepository;
@@ -26,7 +26,7 @@ public class CommentRepositoryTests {
     private Post post2;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         post1 = new Post();
         post1.setTitle("Post 1");
         post1.setLikeCount(0);

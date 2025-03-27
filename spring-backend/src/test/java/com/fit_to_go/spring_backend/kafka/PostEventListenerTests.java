@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.fit_to_go.spring_backend.entity.Post;
 import com.fit_to_go.spring_backend.repository.PostRepository;
 
-public class PostEventListenerTests {
+class PostEventListenerTests {
 
     @Mock
     private PostRepository postRepository;
@@ -25,13 +25,13 @@ public class PostEventListenerTests {
     private PostEventListener postEventListener;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
         postEventListener = new PostEventListener(postRepository);
     }
 
     @Test
-    public void testListenPostIncrementLikeCountEvent() {
+    void testListenPostIncrementLikeCountEvent() {
         Post post = new Post();
         post.setId(1L);
         post.setLikeCount(5);
@@ -47,7 +47,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenPostDecrementLikeCountEvent() {
+    void testListenPostDecrementLikeCountEvent() {
         Post post = new Post();
         post.setId(1L);
         post.setLikeCount(5);
@@ -63,7 +63,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenPostIncrementShareCountEvent() {
+    void testListenPostIncrementShareCountEvent() {
         Post post = new Post();
         post.setId(2L);
         post.setShareCount(3);
@@ -79,7 +79,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenPostIncrementCommentCountEvent() {
+    void testListenPostIncrementCommentCountEvent() {
         Post post = new Post();
         post.setId(3L);
         post.setCommentCount(7);
@@ -95,7 +95,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenPostDecrementInvalidTypeEvent() {
+    void testListenPostDecrementInvalidTypeEvent() {
         Post post = new Post();
         post.setId(4L);
         post.setLikeCount(10);
@@ -117,7 +117,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenCommentEvent() throws Exception {
+    void testListenCommentEvent() throws Exception {
         String commentJson = "{\"id\":1,\"comment\":\"Test Comment\"}";
 
         postEventListener.listenEvent(commentJson, "comment-events-topic");
@@ -127,7 +127,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenCommentEventJsonParsingError() {
+    void testListenCommentEventJsonParsingError() {
         String invalidJson = "invalid-json-format";
 
         postEventListener.listenEvent(invalidJson, "comment-events-topic");
@@ -137,7 +137,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testListenUnknownTopic() {
+    void testListenUnknownTopic() {
         String message = "test-message";
 
         postEventListener.listenEvent(message, "unknown-topic");
@@ -147,7 +147,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testInvalidPostAction() {
+    void testInvalidPostAction() {
         String message = "1:invalid:likecount";
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(new Post()));
@@ -163,7 +163,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testInvalidPostTypeForIncrement() {
+    void testInvalidPostTypeForIncrement() {
         String message = "1:increment:invalid";
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(new Post()));
@@ -179,7 +179,7 @@ public class PostEventListenerTests {
     }
 
     @Test
-    public void testPostNotFound() {
+    void testPostNotFound() {
         String message = "999:increment:likecount";
 
         when(postRepository.findById(999L)).thenReturn(Optional.empty());

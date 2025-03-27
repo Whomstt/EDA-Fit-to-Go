@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fit_to_go.spring_backend.entity.Comment;
 
-public class PostEventPublisherTests {
+class PostEventPublisherTests {
 
     @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -29,13 +29,13 @@ public class PostEventPublisherTests {
     private PostEventPublisher postEventPublisher;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
         postEventPublisher = new PostEventPublisher(kafkaTemplate, objectMapper);
     }
 
     @Test
-    public void testPublishPostEvent() {
+    void testPublishPostEvent() {
         Long postId = 1L;
         String action = "increment";
         String type = "likecount";
@@ -47,7 +47,7 @@ public class PostEventPublisherTests {
     }
 
     @Test
-    public void testPublishCommentEvent() throws JsonProcessingException {
+    void testPublishCommentEvent() throws JsonProcessingException {
         Comment comment = new Comment();
         comment.setId(1L);
         comment.setComment("Test comment");
@@ -61,7 +61,7 @@ public class PostEventPublisherTests {
     }
 
     @Test
-    public void testPublishCommentEventWithSerializationError() throws JsonProcessingException {
+    void testPublishCommentEventWithSerializationError() throws JsonProcessingException {
         Comment comment = new Comment();
 
         when(objectMapper.writeValueAsString(any(Comment.class))).thenThrow(new JsonProcessingException("Test Exception") {});

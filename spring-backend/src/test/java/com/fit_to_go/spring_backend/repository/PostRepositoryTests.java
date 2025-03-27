@@ -13,13 +13,13 @@ import com.fit_to_go.spring_backend.entity.Post;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class PostRepositoryTests {
+class PostRepositoryTests {
 
     @Autowired
     private PostRepository postRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         Post p1 = new Post();
         p1.setTitle("Post A");
         p1.setLikeCount(1);

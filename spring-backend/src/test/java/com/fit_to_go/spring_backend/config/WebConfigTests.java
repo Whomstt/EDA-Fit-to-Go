@@ -10,17 +10,17 @@ import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-public class WebConfigTests {
+class WebConfigTests {
 
     @Test
-    public void testCorsConfigurerBeanNotNull() {
+    void testCorsConfigurerBeanNotNull() {
         WebConfig webConfig = new WebConfig();
         WebMvcConfigurer configurer = webConfig.corsConfigurer();
         assertNotNull(configurer, "The WebMvcConfigurer bean should not be null");
     }
 
     @Test
-    public void testAddCorsMappings() {
+    void testAddCorsMappings() {
         CorsRegistry registry = mock(CorsRegistry.class);
         CorsRegistration registration = mock(CorsRegistration.class);
 

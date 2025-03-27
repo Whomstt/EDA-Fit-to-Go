@@ -29,7 +29,7 @@ import com.fit_to_go.spring_backend.kafka.PostEventPublisher;
 import com.fit_to_go.spring_backend.repository.CommentRepository;
 import com.fit_to_go.spring_backend.repository.PostRepository;
 
-public class PostControllerTests {
+class PostControllerTests {
 
     @Mock
     private PostEventPublisher postEventPublisher;
@@ -46,13 +46,13 @@ public class PostControllerTests {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(postController).build();
     }
 
     @Test
-    public void testGetAllPosts() throws Exception {
+    void testGetAllPosts() throws Exception {
         Post post1 = new Post();
         post1.setId(1L);
         Post post2 = new Post();
@@ -69,7 +69,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testGetPostById() throws Exception {
+    void testGetPostById() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -83,7 +83,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testGetPostByIdNotFound() throws Exception {
+    void testGetPostByIdNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/post/1"))
@@ -93,7 +93,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testGetCommentsByPostId() throws Exception {
+    void testGetCommentsByPostId() throws Exception {
         Comment comment = new Comment();
         comment.setId(1L);
         comment.setComment("A comment");
@@ -111,7 +111,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testGetCommentsByPostIdNotFound() throws Exception {
+    void testGetCommentsByPostIdNotFound() throws Exception {
         when(postRepository.existsById(1L)).thenReturn(false);
 
         mockMvc.perform(get("/api/post/1/comments"))
@@ -121,7 +121,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementLikeCount() throws Exception {
+    void testIncrementLikeCount() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -136,7 +136,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementLikeCountNotFound() throws Exception {
+    void testIncrementLikeCountNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/post/1/increment/likecount"))
@@ -146,7 +146,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testDecrementLikeCount() throws Exception {
+    void testDecrementLikeCount() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -161,7 +161,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testDecrementLikeCountNotFound() throws Exception {
+    void testDecrementLikeCountNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/post/1/decrement/likecount"))
@@ -171,7 +171,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementShareCount() throws Exception {
+    void testIncrementShareCount() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -186,7 +186,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementShareCountNotFound() throws Exception {
+    void testIncrementShareCountNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/post/1/increment/sharecount"))
@@ -196,7 +196,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementCommentCount() throws Exception {
+    void testIncrementCommentCount() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -211,7 +211,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testIncrementCommentCountNotFound() throws Exception {
+    void testIncrementCommentCountNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/post/1/increment/commentcount"))
@@ -221,7 +221,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testAddComment() throws Exception {
+    void testAddComment() throws Exception {
         Post post = new Post();
         post.setId(1L);
 
@@ -246,7 +246,7 @@ public class PostControllerTests {
     }
 
     @Test
-    public void testAddCommentNotFound() throws Exception {
+    void testAddCommentNotFound() throws Exception {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/post/1/comments")
